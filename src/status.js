@@ -8,7 +8,7 @@ class Status extends React.Component {
 
   render() {
     if (this.props.isGameOver) return <h2>Player {this.props.turn + 1} won</h2>;
-    if (this.props.moves === 9) return <h2>Match draw</h2>;
+    if (this.props.isGameDraw) return <h2>Match draw</h2>;
     return <h2>Player {this.props.turn + 1}'s turn</h2>;
   }
 }

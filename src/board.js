@@ -21,7 +21,8 @@ class Board extends React.Component {
         />
       );
     });
-    const className = this.props.isGameOver ? 'inActive' : '';
+    const { isGameDraw, isGameOver } = this.props;
+    const className = isGameOver || isGameDraw ? 'inActive' : '';
     return <div className={`board ${className}`}>{tiles}</div>;
   }
 }

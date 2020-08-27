@@ -17,11 +17,11 @@ class Controller extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isGameOver: false,
+      isWon: false,
+      isGameDraw: false,
       turn: 0,
       player0: [],
-      player1: [],
-      moves: 0
+      player1: []
     };
     this.winningCombinations = winningCombinations.slice();
     this.handleClick = this.handleClick.bind(this);
@@ -34,14 +34,15 @@ class Controller extends React.Component {
     const isWon = this.winningCombinations.some(comb => {
       return comb.every(place => playerSet.includes(place));
     });
-    isWon && (await this.setState({ isGameOver: true, turn: currentTurn }));
+    isWon && (await this.setState({ isWon, turn: currentTurn }));
+    const moves = this.state.player0.length + this.state.player1.length;
+    moves === 9 && (await this.setState({ isGameDraw: true }));
   }
 
   async handleClick(id, turn) {
     await this.setState(state => ({
       [`player${turn}`]: state[`player${turn}`].concat(id),
-      turn: 1 - state.turn,
-      moves: state.moves + 1
+      turn: 1 - state.turn
     }));
     this.checkWinningCondition();
   }
@@ -52,12 +53,13 @@ class Controller extends React.Component {
         <Board
           onClick={this.handleClick}
           turn={this.state.turn}
-          isGameOver={this.state.isGameOver}
+          isGameOver={this.state.isWon}
+          isGameDraw={this.state.isGameDraw}
         />
         <Status
-          isGameOver={this.state.isGameOver}
+          isGameOver={this.state.isWon}
           turn={this.state.turn}
-          moves={this.state.moves}
+          isGameDraw={this.state.isGameDraw}
         />
       </div>
     );
