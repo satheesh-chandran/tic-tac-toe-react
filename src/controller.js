@@ -34,15 +34,13 @@ class Controller extends React.Component {
     const isWon = this.winningCombinations.some(comb => {
       return comb.every(place => playerSet.includes(place));
     });
-    if (isWon) {
-      await this.setState({ isGameOver: true, turn: currentTurn });
-    }
+    isWon && (await this.setState({ isGameOver: true, turn: currentTurn }));
   }
 
   async handleClick(id, turn) {
     await this.setState(state => ({
       [`player${turn}`]: state[`player${turn}`].concat(id),
-      turn: (1 + state.turn) % 2,
+      turn: 1 - state.turn,
       moves: state.moves + 1
     }));
     this.checkWinningCondition();
