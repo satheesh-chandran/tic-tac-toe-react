@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Board from './board';
 import Status from './status';
 
@@ -17,14 +17,14 @@ class Controller extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isWon: false,
-      isGameDraw: false,
       turn: 0,
       player0: [],
-      player1: []
+      player1: [],
+      isWon: false,
+      isGameDraw: false
     };
-    this.winningCombinations = winningCombinations.slice();
     this.handleClick = this.handleClick.bind(this);
+    this.winningCombinations = [...winningCombinations];
     this.checkWinningCondition = this.checkWinningCondition.bind(this);
   }
 
@@ -36,31 +36,28 @@ class Controller extends React.Component {
     });
     isWon && (await this.setState({ isWon, turn: currentTurn }));
     const moves = this.state.player0.length + this.state.player1.length;
-    moves === 9 && (await this.setState({ isGameDraw: true }));
+    moves === 9 && this.setState({ isGameDraw: true });
   }
 
   async handleClick(id, turn) {
     await this.setState(state => ({
-      [`player${turn}`]: state[`player${turn}`].concat(id),
-      turn: 1 - state.turn
+      turn: 1 - state.turn,
+      [`player${turn}`]: state[`player${turn}`].concat(id)
     }));
     this.checkWinningCondition();
   }
 
   render() {
+    const { turn, isWon, isGameDraw } = this.state;
     return (
       <div>
         <Board
+          turn={turn}
+          isGameOver={isWon}
+          isGameDraw={isGameDraw}
           onClick={this.handleClick}
-          turn={this.state.turn}
-          isGameOver={this.state.isWon}
-          isGameDraw={this.state.isGameDraw}
         />
-        <Status
-          isGameOver={this.state.isWon}
-          turn={this.state.turn}
-          isGameDraw={this.state.isGameDraw}
-        />
+        <Status turn={turn} isGameOver={isWon} isGameDraw={isGameDraw} />
       </div>
     );
   }
